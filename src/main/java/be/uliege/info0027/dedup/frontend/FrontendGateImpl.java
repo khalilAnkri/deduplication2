@@ -19,8 +19,12 @@ import java.util.stream.Stream;
  * call against {@link DeduplicationService} and serialises the result.
  * No business logic lives here — only protocol translation and validation.
  * <p>
- * Uses the project-internal {@link Json} utility so the module has zero
- * runtime dependencies and ships as a thin JAR with no shading required.
+/**
+ * JSON-string adapter that fulfills the {@link FrontendGate} contract.
+ * <p>
+ * Implements the Adapter pattern: it parses a JSON request into a typed
+ * call against {@link DeduplicationService} and serialises the result.
+ * No business logic lives here — only protocol translation and validation.
  */
 public final class FrontendGateImpl implements FrontendGate {
 

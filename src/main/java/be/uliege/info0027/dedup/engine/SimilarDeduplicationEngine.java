@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Engine that groups perceptually-similar images using a 64-bit average hash
@@ -68,7 +70,7 @@ public final class SimilarDeduplicationEngine implements DeduplicationEngine {
         }
 
         // Collect non-trivial clusters.
-        java.util.Map<Integer, List<VirtualFileInfo>> clusters = new java.util.LinkedHashMap<>();
+        Map<Integer, List<VirtualFileInfo>> clusters = new LinkedHashMap<>();
         for (int i = 0; i < n; i++) {
             int root = find(parent, i);
             clusters.computeIfAbsent(root, k -> new ArrayList<>()).add(hashable.get(i));

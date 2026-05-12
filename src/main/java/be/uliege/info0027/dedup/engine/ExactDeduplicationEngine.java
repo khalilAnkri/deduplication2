@@ -66,7 +66,7 @@ public final class ExactDeduplicationEngine implements DeduplicationEngine {
             try (InputStream in = Files.newInputStream(Path.of(physicalPath))) {
                 byte[] buf = new byte[BUFFER_SIZE];
                 int n;
-                while ((n = in.read(buf)) > 0) {
+                while ((n = in.read(buf)) != -1) {
                     md.update(buf, 0, n);
                 }
             }

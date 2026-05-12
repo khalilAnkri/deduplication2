@@ -1,0 +1,56 @@
+digraph UML {
+    rankdir=TB;
+    ranksep=0.45;
+    nodesep=0.25;
+    fontname="Helvetica";
+    splines=ortho;
+    node [shape=record, fontname="Helvetica", fontsize=9, style=filled, fillcolor="#F5F7FA", margin="0.08,0.05"];
+    edge [fontname="Helvetica", fontsize=8];
+
+    subgraph cluster_provided {
+        label="Provided interfaces (be.uliege.info0027.deduplication)";
+        labeljust=l;
+        fontsize=10;
+        style=dashed; color=gray50; bgcolor="#FAFAFA";
+
+        FileDeduplicationBootstrap [label="{«interface»\nFileDeduplicationBootstrap|+ initialize(vfs)\l+ getFrontendGate()\l+ getStorageChecker()\l}", fillcolor="#FFF6E0"];
+        FrontendGate [label="{«interface»\nFrontendGate|+ accept(json) : String\l+ acceptStream(json) : Stream\<String\>\l}", fillcolor="#FFF6E0"];
+        StorageChecker [label="{«interface»\nStorageChecker|+ findDuplicate(file) : VFI\l}", fillcolor="#FFF6E0"];
+        VirtualFileSystem [label="{«interface»\nVirtualFileSystem|+ listContent(uid, path)\l+ listContent()\l}", fillcolor="#FFF6E0"];
+        VirtualFileInfo [label="{«record»\nVirtualFileInfo|virtualPath, isDirectory,\lsize, userId, physicalPath\l}", fillcolor="#EEF6FF"];
+    }
+
+    DeduplicationBootstrapImpl [label="{DeduplicationBootstrapImpl|- frontendGate\l- storageChecker\l|+ initialize(vfs)\l+ getFrontendGate()\l+ getStorageChecker()\l}"];
+
+    FrontendGateImpl [label="{FrontendGateImpl|- service\l- engineFactory\l|+ accept(json)\l+ acceptStream(json)\l}"];
+    StorageCheckerImpl [label="{StorageCheckerImpl|- vfs\l|+ findDuplicate(file)\l}"];
+
+    DeduplicationService [label="{DeduplicationService|- vfs\l|+ scan(user, path, engine)\l+ scanStream(user, path, engine)\l}"];
+    VfsWalker [label="{«utility»\nVfsWalker|+ collectRegularFiles(...)\l}"];
+    DeduplicationEngineFactory [label="{DeduplicationEngineFactory|- registry : Map\<String, Supplier\>\l|+ register(type, supplier)\l+ create(type) : Optional\<Engine\>\l}"];
+
+    DeduplicationEngine [label="{«interface»\nDeduplicationEngine|+ findDuplicateGroups(files)\l+ streamDuplicateGroups(files)\l}", fillcolor="#FFF6E0"];
+    ExactDeduplicationEngine [label="{ExactDeduplicationEngine|+ findDuplicateGroups(files)\l+ sha256(path) : String\l}"];
+    SimilarDeduplicationEngine [label="{SimilarDeduplicationEngine|- threshold : int\l|+ findDuplicateGroups(files)\l- aHash(path) : Long\l}"];
+
+    edge [arrowhead=empty, style=dashed, color=gray30];
+    DeduplicationBootstrapImpl   -> FileDeduplicationBootstrap;
+    FrontendGateImpl             -> FrontendGate;
+    StorageCheckerImpl           -> StorageChecker;
+    ExactDeduplicationEngine     -> DeduplicationEngine;
+    SimilarDeduplicationEngine   -> DeduplicationEngine;
+
+    edge [arrowhead=open, style=solid, color=gray30];
+    DeduplicationBootstrapImpl   -> DeduplicationService;
+    DeduplicationBootstrapImpl   -> DeduplicationEngineFactory;
+    DeduplicationBootstrapImpl   -> FrontendGateImpl;
+    DeduplicationBootstrapImpl   -> StorageCheckerImpl;
+    FrontendGateImpl             -> DeduplicationService;
+    FrontendGateImpl             -> DeduplicationEngineFactory;
+    DeduplicationService         -> VfsWalker;
+    DeduplicationService         -> DeduplicationEngine;
+    StorageCheckerImpl           -> VfsWalker;
+    StorageCheckerImpl           -> ExactDeduplicationEngine;
+    DeduplicationEngineFactory   -> ExactDeduplicationEngine;
+    DeduplicationEngineFactory   -> SimilarDeduplicationEngine;
+}

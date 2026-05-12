@@ -1,0 +1,13 @@
+---
+:id: 411266724
+:submitters:
+- :name: ANKRI Mohamed-Khalil
+  :email: mohamed-khalil.ankri@student.uliege.be
+- :name: Robin KULCZYCKI
+  :email: robin.kulczycki@student.uliege.be
+:created_at: !ruby/object:ActiveSupport::TimeWithZone
+  utc: 2026-05-04 07:28:55.297048000 Z
+  zone: !ruby/object:ActiveSupport::TimeZone
+    name: America/Los_Angeles
+  time: 2026-05-04 00:28:55.297048000 Z
+:status: processed
